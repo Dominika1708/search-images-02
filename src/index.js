@@ -16,42 +16,41 @@ const fetchPictures = async name => {
   return pictures;
 };
 
-const addPictures = pictures => {
-  let markup = ``;
-  for (const photo in pictures) {
-    markup =
-      markup +
-      `<div class="photo-card">
-      <a href="${photo.largeImageURL}">
-  <img src="${photo.webformatURL}" alt="${photo.tags}" loading="lazy" />
-  </a>
-  <div class="info">
-    <p class="info-item">
-      <b>Likes</b>
-      ${photo.likes}
-    </p>
-    <p class="info-item">
-      <b>Views</b>
-      ${photo.views}
-    </p>
-    <p class="info-item">
-      <b>Comments</b>
-      ${photo.comments}
-    </p>
-    <p class="info-item">
-      <b>Downloads</b>
-      ${photo.downloads}
-    </p>
-  </div>
-</div>`;
-  }
 
+const addPictures = pictures => {
+  const photos = pictures.hits;
+  const markup = photos
+    .map(
+      photo =>
+        `<div class="photo-card">
+         <a href="${photo.largeImageURL}">
+            <img src="${photo.webformatURL}" alt="${photo.tags}" loading="lazy" />
+         </a>    
+            <div class="info">
+                <p class="info-item">
+                <b>Likes</b>
+                ${photo.likes}
+                </p>
+                <p class="info-item">
+                <b>Views</b>
+                ${photo.views}
+                </p>
+                <p class="info-item">
+                <b>Comments</b>
+                ${photo.comments}
+                </p>
+                <p class="info-item">
+                <b>Downloads</b>
+                ${photo.downloads}
+                </p>
+            </div>
+        </div>`
+    )
+    .join('');
   gallery.innerHTML = markup;
 };
 
-new SimpleLightbox('.gallery a', { captionDelay: 250 });
 
-console.log(fetchPictures('cat'));
 
 form.addEventListener('submit', e => {
   e.preventDefault();
@@ -70,3 +69,6 @@ form.addEventListener('submit', e => {
     console.log(error.message);
   }
 });
+
+
+new SimpleLightbox('.gallery a', {});
