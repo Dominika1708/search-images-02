@@ -16,6 +16,7 @@ const fetchPictures = async name => {
   return pictures;
 };
 
+const lightbox = new SimpleLightbox('.gallery a');
 
 const addPictures = pictures => {
   const photos = pictures.hits;
@@ -23,8 +24,8 @@ const addPictures = pictures => {
     .map(
       photo =>
         `<div class="photo-card">
-         <a href="${photo.largeImageURL}">
-            <img src="${photo.webformatURL}" alt="${photo.tags}" loading="lazy" />
+         <a class="gallery-link" href="${photo.largeImageURL}">
+            <img class="gallery-image" src="${photo.webformatURL}" alt="${photo.tags}" loading="lazy"/>
          </a>    
             <div class="info">
                 <p class="info-item">
@@ -63,7 +64,8 @@ form.addEventListener('submit', e => {
     }
     return fetchPictures(tipedInput).then(pictures => {
       Notiflix.Notify.failure('nooooo');
-      addPictures(pictures);
+        addPictures(pictures);
+        lightbox.refresh();
     });
   } catch (error) {
     console.log(error.message);
@@ -71,4 +73,5 @@ form.addEventListener('submit', e => {
 });
 
 
-new SimpleLightbox('.gallery a', {});
+// new SimpleLightbox('.gallery a', {});
+// var lightbox = $('.gallery a').simpleLightbox({ /* options */ });
