@@ -27,20 +27,20 @@ const fetchResponseSearch = async (search, pagenr) => {
 
 // console.log(fetchResponseTrend(1));
 
-function element(totalPages, page) {
+function changePage(totalPages, page) {
   let liTag = '';
   let activeLi;
   let beforePages = page - 1;
   let afterPages = page + 1;
 
   if (page > 1) {
-    liTag += `<li class="btn prev" data-number=${
+    liTag += `<li class="btn prev" data-page="${
       page - 1
-    } onclick="element(totalPages, ${page - 1})"><span>&#8592</span></li>`;
+    }" onclick="changePage(totalPages, ${page - 1})"><span>&#8592</span></li>`;
   }
 
   if (page > 2) {
-    liTag += `<li class="num" data-number=1 onclick="element(totalPages, 1)"><span>1</span></li>`;
+    liTag += `<li class="num" data-page="1" onclick="changePage(totalPages, 1)"><span>1</span></li>`;
     if (page > 3) {
       liTag += `<li class="dots"><span>...</span></li>`;
     }
@@ -70,20 +70,20 @@ function element(totalPages, page) {
     } else {
       activeLi = '';
     }
-    liTag += `<li class="num ${activeLi}" data-number=${pageLength} onclick="element(totalPages, ${pageLength})"><span>${pageLength}</span></li>`;
+    liTag += `<li class="num ${activeLi}" data-page="${pageLength}" onclick="changePage(totalPages, ${pageLength})"><span>${pageLength}</span></li>`;
   }
 
   if (page < totalPages - 1) {
     if (page < totalPages - 3) {
       liTag += `<li class="dots"><span>...</span></li>`;
     }
-    liTag += `<li class="num" data-number=${totalPages} onclick="element(totalPages, ${totalPages})"><span>${totalPages}</span></li>`;
+    liTag += `<li class="num" data-page="${totalPages}" onclick="changePage(totalPages, ${totalPages})"><span>${totalPages}</span></li>`;
   }
 
   if (page < totalPages) {
-    liTag += `<li class="btn next" data-number=${
+    liTag += `<li class="btn next" data-page="${
       page + 1
-    } onclick="element(totalPages, ${page + 1})"><span>&#8594</span></li>`;
+    }" onclick="changePage(totalPages, ${page + 1})"><span>&#8594</span></li>`;
   }
 
   if (totalPages === 1) {
@@ -95,7 +95,7 @@ function element(totalPages, page) {
   ulTag.innerHTML = liTag;
 }
 
-// element(totalPages, page);
+// changePage(totalPages, page);
 
 const addFilms = films => {
   const movies = films.results;
@@ -120,19 +120,21 @@ const addFilms = films => {
 
 fetchResponseTrend(page).then(popularMovies => {
   addFilms(popularMovies);
-  element(popularMovies.total_pages, page);
+  changePage(popularMovies.total_pages, page);
 
-  ulTag.addEventListener('click', event => {
-    page = Number(event.target.dataset.number);
-
+    ulTag.addEventListener('click', event => {
+      
+    page = Number(event.target.textContent);
+      console.log(event.target.dataset.page);
+      
     fetchResponseTrend(page).then(popularMovies => {
       addFilms(popularMovies);
-      element(popularMovies.total_pages, page);
+      changePage(popularMovies.total_pages, page);
     });
   });
 });
 
-ulTag.removeEventListener('submit', {})
+ulTag.removeEventListener('submit', {});
 
 form.addEventListener('submit', e => {
   let tipedInput = input.value.trim();
@@ -154,32 +156,33 @@ form.addEventListener('submit', e => {
         );
         return fetchResponseTrend(page).then(films => {
           addFilms(films);
-          element(films.total_pages, page);
+          changePage(films.total_pages, page);
 
           ulTag.addEventListener('click', event => {
             page = Number(event.target.dataset.number);
 
             fetchResponseTrend(page).then(films => {
               addFilms(films);
-              element(films.total_pages, page);
+              changePage(films.total_pages, page);
             });
           });
-            ulTag.removeEventListener('submit', {})
+          ulTag.removeEventListener('submit', {});
         });
       }
 
       if (movies.total_results > 0) {
         addFilms(movies);
-        element(movies.total_pages, page);
+        changePage(movies.total_pages, page);
 
         ulTag.addEventListener('click', event => {
           page = Number(event.target.dataset.number);
 
           fetchResponseSearch(tipedInput, page).then(movies => {
             addFilms(movies);
-            element(movies.total_pages, page);
+            changePage(movies.total_pages, page);
           });
-        });ulTag.removeEventListener('submit', {})
+        });
+        ulTag.removeEventListener('submit', {});
       }
     });
   } catch (error) {
@@ -189,5 +192,5 @@ form.addEventListener('submit', e => {
 
 // ulTag.addEventListener("click", (event) => {
 //     page = event.target.dataset.number
-//     element(films.total_pages, page)
+//     changePage(films.total_pages, page)
 // })
