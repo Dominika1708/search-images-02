@@ -159,7 +159,7 @@ form.addEventListener('submit', e => {
           changePage(films.total_pages, page);
 
           ulTag.addEventListener('click', event => {
-            page = Number(event.target.dataset.number);
+            page = Number(event.target.textContent);
 
             fetchResponseTrend(page).then(films => {
               addFilms(films);
@@ -175,7 +175,7 @@ form.addEventListener('submit', e => {
         changePage(movies.total_pages, page);
 
         ulTag.addEventListener('click', event => {
-          page = Number(event.target.dataset.number);
+          page = Number(event.target.textContent);
 
           fetchResponseSearch(tipedInput, page).then(movies => {
             addFilms(movies);
