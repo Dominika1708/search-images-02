@@ -126,7 +126,7 @@ fetchResponseTrend(page).then( async popularMovies => {
 
  ulTag.addEventListener('click', async (event) => {
 
-        page = Number(event.target.dataset.page);
+        page = Number(event.target.textContent);
 
 
         console.log(event.target.dataset.page);
