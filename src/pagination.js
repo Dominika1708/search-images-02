@@ -33,6 +33,8 @@ function changePage(totalPages, page) {
   let beforePages = page - 1;
   let afterPages = page + 1;
 
+  ulTag.innerHTML = '';
+
   if (page > 1) {
     liTag += `<li class="btn prev" data-page="${
       page - 1
@@ -118,25 +120,26 @@ const addFilms = films => {
   filmList.innerHTML = markup;
 };
 
-fetchResponseTrend(page).then(popularMovies => {
+fetchResponseTrend(page).then( async popularMovies => {
   addFilms(popularMovies);
   changePage(popularMovies.total_pages, page);
 
-    ulTag.addEventListener('click', event => {
-      
-    page = Number(event.target.textContent);
-      console.log(event.target.dataset.page);
-      
-    fetchResponseTrend(page).then(popularMovies => {
-      addFilms(popularMovies);
-      changePage(popularMovies.total_pages, page);
+ ulTag.addEventListener('click', async (event) => {
+
+        page = Number(event.target.dataset.page);
+
+
+        console.log(event.target.dataset.page);
+        const popularMoviesNext = await fetchResponseTrend(page);
+
+        addFilms(popularMoviesNext);
+        changePage(popularMoviesNext.total_pages, page);
     });
-  });
 });
 
 ulTag.removeEventListener('submit', {});
 
-form.addEventListener('submit', e => {
+form.addEventListener('submit', async e => {
   let tipedInput = input.value.trim();
   e.preventDefault();
   filmList.innerHTML = '';
@@ -154,32 +157,32 @@ form.addEventListener('submit', e => {
         alert(
           `there are no movies with this title, here are the popular movies of the moment`
         );
-        return fetchResponseTrend(page).then(films => {
-          addFilms(films);
-          changePage(films.total_pages, page);
+        // return fetchResponseTrend(page).then(films => {
+        //   addFilms(films);
+        //   changePage(films.total_pages, page);
 
-          ulTag.addEventListener('click', event => {
-            page = Number(event.target.textContent);
+        //   ulTag.addEventListener('click', event => {
+        //     page = Number(event.target.textContent);
 
-            fetchResponseTrend(page).then(films => {
-              addFilms(films);
-              changePage(films.total_pages, page);
-            });
-          });
-          ulTag.removeEventListener('submit', {});
-        });
+        //     fetchResponseTrend(page).then(films => {
+        //       addFilms(films);
+        //       changePage(films.total_pages, page);
+        //     });
+        //   });
+        //   ulTag.removeEventListener('submit', {});
+        // });
       }
 
-      if (movies.total_results > 0) {
+        if (movies.total_results > 0) {
         addFilms(movies);
         changePage(movies.total_pages, page);
 
         ulTag.addEventListener('click', event => {
           page = Number(event.target.textContent);
 
-          fetchResponseSearch(tipedInput, page).then(movies => {
-            addFilms(movies);
-            changePage(movies.total_pages, page);
+          fetchResponseSearch(tipedInput, page).then(moviesNextPage => {
+            addFilms(moviesNextPage);
+            changePage(moviesNextPage.total_pages, page);
           });
         });
         ulTag.removeEventListener('submit', {});
